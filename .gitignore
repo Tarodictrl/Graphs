@@ -1,3 +1,4 @@
 /.venv
 /Graph.gv
 /__pycache__
+.vscode/settings.json

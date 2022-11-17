@@ -1,7 +1,8 @@
-import numpy as np
 import random
+
 import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 
 
 class Graphs:
@@ -12,12 +13,10 @@ class Graphs:
         """
         self._number_of_vertices: int = n
         self._number_of_edges: int = e
-        self._incidence_matrix: np.ndarray = np.zeros((e, n))
         self._vertices: set = self._generate_vertices()
         self._edges: list = self._generate_edges()
         self._incidence_matrix: np.ndarray = self._generate_matrix_incidence()
         self._graph: nx.Graph = self._generate_graph()
-
 
     def _generate_graph(self) -> nx.Graph:
         """
@@ -25,6 +24,8 @@ class Graphs:
         """
         g = nx.Graph()
         g.add_nodes_from(self._vertices)
+        for edge in self._edges:
+            g.add_edge(edge[0], edge[1], weight=random.randint(1, 10))
         g.add_edges_from(self._edges)
         return g
 
@@ -48,7 +49,10 @@ class Graphs:
         """
         Рисует граф.
         """
-        nx.draw(self._graph, with_labels=True)
+        pos = nx.spring_layout(self._graph)
+        nx.draw_networkx(self._graph,pos)
+        labels = nx.get_edge_attributes(self._graph,'weight')
+        nx.draw_networkx_edge_labels(self._graph, pos, edge_labels=labels)
         plt.show()
     
     def _generate_matrix_incidence(self) -> np.ndarray:
@@ -67,7 +71,7 @@ class Graphs:
         Возвращает матрицу инцидентности.
         """
         return self._incidence_matrix
-    
+   
     def get_adjacency_matrix(self) -> np.ndarray:
         """
         Возвращает матрицу смежности.
@@ -79,7 +83,9 @@ class Graphs:
         Возвращает кратчайшие пути.
         """
         # TODO: Сделать свой алгоритм поиска кратчайших путей методом Дейкстры.
+        
         try:
             return nx.all_shortest_paths(self._graph, start, end, method="dijkstra")
         except Exception as e:
             print(e)
+            return []
