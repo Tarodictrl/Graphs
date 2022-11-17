@@ -8,7 +8,8 @@ if __name__ == "__main__":
     print("Матрица ицидентности => \n", pandas.DataFrame(graph.get_incidence_matrix()))
     print("Матрица смежности: => \n", pandas.DataFrame(graph.get_adjacency_matrix()))
     if input("Показать кратчайщие пути? (y/n): ") == "y":
-        start = int(input("Введите начальную вершину: "))
-        end = int(input("Введите конечную вершину: "))
-        print("Кратчайшие пути => \n", pandas.DataFrame(graph.get_shortest_paths(start, end)))
+        start = int(input(f"Введите начальную вершину от 1 до {n}: "))
+        end = int(input(f"Введите конечную вершину от 1 до {n}: "))
+        length = int(input("Введите длину пути: "))
+        print("Кратчайшие пути => \n", graph.get_shortes_path_method_dijkstra(start, end))
     graph.draw_graph()

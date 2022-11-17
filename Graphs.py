@@ -24,8 +24,7 @@ class Graphs:
         """
         g = nx.Graph()
         g.add_nodes_from(self._vertices)
-        for edge in self._edges:
-            g.add_edge(edge[0], edge[1], weight=random.randint(1, 10))
+        g.add_edges_from(self._edges)
         g.add_edges_from(self._edges)
         return g
 
@@ -45,15 +44,6 @@ class Graphs:
             array.append(edge)
         return array
 
-    def draw_graph(self) -> None:
-        """
-        Рисует граф.
-        """
-        pos = nx.spring_layout(self._graph)
-        nx.draw_networkx(self._graph,pos)
-        labels = nx.get_edge_attributes(self._graph,'weight')
-        nx.draw_networkx_edge_labels(self._graph, pos, edge_labels=labels)
-        plt.show()
     
     def _generate_matrix_incidence(self) -> np.ndarray:
         """
@@ -66,6 +56,14 @@ class Graphs:
             incidence_matrix[r][i] = 1
         return incidence_matrix
     
+    def draw_graph(self) -> None:
+        """
+        Рисует граф.
+        """
+        pos = nx.spring_layout(self._graph)
+        nx.draw_networkx(self._graph, pos)
+        plt.show()
+    
     def get_incidence_matrix(self) -> np.ndarray:
         """
         Возвращает матрицу инцидентности.
@@ -77,15 +75,44 @@ class Graphs:
         Возвращает матрицу смежности.
         """
         return nx.adjacency_matrix(self._graph).todense()
+  
+    def get_shortes_path_method_dijkstra(self, start: int, end: int):
+        """
+        Возвращает кратчайшие пути методом Дейкстры.
+        """
+        unvisited_nodes = list(self._graph.nodes)
 
-    def get_shortest_paths(self, start: int, end: int) -> list:
-        """
-        Возвращает кратчайшие пути.
-        """
-        # TODO: Сделать свой алгоритм поиска кратчайших путей методом Дейкстры.
+        shortest_path = {}
+    
+        previous_nodes = {}
+    
+        max_value = float("inf")
+        for node in unvisited_nodes:
+            shortest_path[node] = max_value
         
-        try:
-            return nx.all_shortest_paths(self._graph, start, end, method="dijkstra")
-        except Exception as e:
-            print(e)
-            return []
+        shortest_path[start] = 0
+        
+        while unvisited_nodes:
+            current_min_node = None
+            for node in unvisited_nodes:
+                if current_min_node == None:
+                    current_min_node = node
+                elif shortest_path[node] < shortest_path[current_min_node]:
+                    current_min_node = node
+                    
+            neighbors = self._graph.neighbors(current_min_node)
+            for neighbor in neighbors:
+                tentative_value = shortest_path[current_min_node] + 1
+                if tentative_value < shortest_path[neighbor]:
+                    shortest_path[neighbor] = tentative_value
+                    previous_nodes[neighbor] = current_min_node
+    
+            unvisited_nodes.remove(current_min_node)
+        
+        path = [start]
+        node = end
+        while node != start:
+            path.append(node)
+            node = previous_nodes[node]
+        return sorted(path)
+    
