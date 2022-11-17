@@ -10,6 +10,5 @@ if __name__ == "__main__":
     if input("Показать кратчайщие пути? (y/n): ") == "y":
         start = int(input(f"Введите начальную вершину от 1 до {n}: "))
         end = int(input(f"Введите конечную вершину от 1 до {n}: "))
-        length = int(input("Введите длину пути: "))
         print("Кратчайшие пути => \n", graph.get_shortes_path_method_dijkstra(start, end))
     graph.draw_graph()
